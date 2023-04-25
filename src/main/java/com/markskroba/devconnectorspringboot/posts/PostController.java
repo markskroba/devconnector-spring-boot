@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -24,64 +25,46 @@ public class PostController {
         return new ResponseEntity<>(postService.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Post> findOneById(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(postService.findById(id));
+    }
+
     @PostMapping
     public ResponseEntity<Post> createPost(@RequestBody CreatePostDto dto) {
         return new ResponseEntity<>(postService.createPost(dto), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Post> findOneById(@PathVariable("id") String id) {
-        return postService.findById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @DeleteMapping ("/{id}")
-    public ResponseEntity<Post> deleteOneById(@PathVariable("id") String id) {
-        Optional<Post> post = postService.findById(id);
-        if (!post.isPresent()) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().body(postService.deleteOneById(post.get()));
+    public ResponseEntity<ResponseMessage> deleteOneById(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(postService.deleteOneById(id));
     }
-
+//
     @PutMapping("/like/{id}")
     public ResponseEntity<Post> likePost(@PathVariable("id") String id) {
-        Optional<Post> post = postService.findById(id);
-        if (!post.isPresent()) return ResponseEntity.notFound().build();
-        Post res = postService.likePost(post.get());
-        if (res == null) return ResponseEntity.noContent().build();
-        return ResponseEntity.ok().body(res);
+        return ResponseEntity.ok().body(postService.likePost(id));
     }
 
     @PutMapping("/unlike/{id}")
     public ResponseEntity<Post> unlikePost(@PathVariable("id") String id) {
-        Optional<Post> post = postService.findById(id);
-        if (!post.isPresent()) return ResponseEntity.notFound().build();
-        Post res = postService.unlikePost(post.get());
-        if (res == null) return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok().body(res);
+        return ResponseEntity.ok().body(postService.unlikePost(id));
     }
 
     @PostMapping("/comment/{id}")
     public ResponseEntity<Post> commentOnPost(@PathVariable("id") String id, @RequestBody CreatePostDto dto) {
-        Optional<Post> post = postService.findById(id);
-        if (!post.isPresent()) return ResponseEntity.notFound().build();
-        Post res = postService.commentOnPost(post.get().get_id(), dto);
-        if (res == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().body(res);
+        return ResponseEntity.ok().body(postService.commentOnPost(id, dto));
     }
 
     @DeleteMapping("/comment/{id}/{comment_id}")
-    public ResponseEntity<Post> removeCommentOnPost(@PathVariable("id") String id, @PathVariable("comment_id") String comment_id) {
-        Optional<Post> optionalPost = postService.findById(id);
-        if (optionalPost.isPresent()) {
-           Post post = optionalPost.get();
-           Post res = postService.removeCommentOnPost(id, comment_id);
-           if (!(res == null)) {
-               return ResponseEntity.ok().body(res);
-           } else {
-               return ResponseEntity.notFound().build();
-           }
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Post> removeCommentOnPost(@PathVariable("id") String id, @PathVariable("comment_id") String commentId) {
+        return ResponseEntity.ok().body(postService.removeCommentOnPost(id, commentId));
     }
 
+    @ExceptionHandler({NoSuchElementException.class, IllegalArgumentException.class})
+    public ResponseEntity<ResponseMessage> handleNotFound(Exception e) {
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        if (e.getClass() == IllegalArgumentException.class) httpStatus = HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<>(new ResponseMessage(e.getMessage()), httpStatus);
+    }
 }

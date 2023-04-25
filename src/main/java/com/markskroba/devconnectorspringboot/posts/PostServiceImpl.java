@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.swing.text.html.Option;
 import javax.xml.stream.events.Comment;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,14 +29,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Optional<Post> findById(String id) {
-        return postRepository.findById(id);
+    public Post findById(String id) {
+        return postRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Post not found"));
     }
 
     @Override
-    public Post deleteOneById(Post post) {
-        postRepository.deleteById(post.get_id());
-        return post;
+    public ResponseMessage deleteOneById(String id) {
+        if (!postRepository.existsById(id)) throw new NoSuchElementException("Post not found");
+        postRepository.deleteById(id);
+        // todo: user not authorized when deleting posts of other users
+        return new ResponseMessage("Post deleted");
     }
 
     @Override
@@ -46,9 +49,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post likePost(Post post) {
+    public Post likePost(String id) {
         String userId = "6056d8958ba84fc81f46cfe7";
-        if (post.getLikes().stream().filter(e -> e.getUser().equals(userId)).count() >= 1) return null;
+        Post post = this.findById(id);
+        if (post.getLikes().stream().filter(e -> e.getUser().equals(userId)).count() >= 1) throw new IllegalArgumentException("Post already liked");
         LikeData like = new LikeData(userId);
         post.getLikes().add(like);
         postRepository.save(post);
@@ -56,10 +60,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post unlikePost(Post post) {
+    public Post unlikePost(String id) {
         String userId = "6056d8958ba84fc81f46cfe7";
+        Post post = this.findById(id);
         Optional<LikeData> like = post.getLikes().stream().filter(e -> e.getUser().equals(userId)).reduce((a, b) -> null);
-        if (!like.isPresent()) return null;
+        if (!like.isPresent()) throw new IllegalArgumentException("Post not liked");
         post.getLikes().remove(like.get());
         postRepository.save(post);
         return post;
@@ -70,22 +75,18 @@ public class PostServiceImpl implements PostService {
         String text = dto.getText();
         String userId = "6056d8958ba84fc81f46cfe7";
 
-        Optional<Post> post = postRepository.findById(id);
-        if (!post.isPresent()) return null;
-        Post postData =  post.get();
-        CommentData comment = new CommentData(text, userId);
-        postData.getComments().add(comment);
-        postRepository.save(postData);
-        return postData;
+        Post post = this.findById(id);
+        CommentData commentData = new CommentData(text, userId);
+        post.getComments().add(commentData);
+        postRepository.save(post);
+        return post;
     }
 
     @Override
     public Post removeCommentOnPost(String id, String commentId) {
-        Optional<Post> optionalPost = postRepository.findById(id);
-        if (!optionalPost.isPresent()) return null;
-        Post post = optionalPost.get();
+        Post post = this.findById(id);
         Stream<CommentData> data = post.getComments().stream().filter(e -> e.getUser() == commentId);
-        if (data.count() < 1) return null;
+        if (data.count() < 1) throw new NoSuchElementException("Comment not found");
         CommentData oldest = data.toList().get(0);
         post.getComments().remove(oldest);
         postRepository.save(post);
