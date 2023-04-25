@@ -1,28 +1,21 @@
 package com.markskroba.devconnectorspringboot.posts;
 
+import com.markskroba.devconnectorspringboot.auth.jwt.JwtAuthService;
 import com.markskroba.devconnectorspringboot.posts.dto.CreatePostDto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.markskroba.devconnectorspringboot.users.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import javax.xml.stream.events.Comment;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final JwtAuthService authService;
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
     @Override
     public List<Post> findAll() {
         return postRepository.findAll();
@@ -43,14 +36,26 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post createPost(CreatePostDto dto) {
-        Post post = new Post(dto.getText(), "Username");
+        User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
+        Post post = Post
+                .builder()
+                .text(dto.getText())
+                .name(user.getName())
+                .avatar(user.getAvatar())
+                .user(user.get_id())
+                .likes(new ArrayList<>())
+                .comments(new ArrayList<>())
+                .date(new Date())
+                .build();
+
         postRepository.save(post);
         return post;
     }
 
     @Override
     public Post likePost(String id) {
-        String userId = "6056d8958ba84fc81f46cfe7";
+        User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
+        String userId = user.get_id();
         Post post = this.findById(id);
         if (post.getLikes().stream().filter(e -> e.getUser().equals(userId)).count() >= 1) throw new IllegalArgumentException("Post already liked");
         LikeData like = new LikeData(userId);
@@ -61,7 +66,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post unlikePost(String id) {
-        String userId = "6056d8958ba84fc81f46cfe7";
+        User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
+        String userId = user.get_id();
         Post post = this.findById(id);
         Optional<LikeData> like = post.getLikes().stream().filter(e -> e.getUser().equals(userId)).reduce((a, b) -> null);
         if (!like.isPresent()) throw new IllegalArgumentException("Post not liked");
@@ -73,7 +79,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post commentOnPost(String id, CreatePostDto dto) {
         String text = dto.getText();
-        String userId = "6056d8958ba84fc81f46cfe7";
+        User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
+        String userId = user.get_id();
 
         Post post = this.findById(id);
         CommentData commentData = new CommentData(text, userId);

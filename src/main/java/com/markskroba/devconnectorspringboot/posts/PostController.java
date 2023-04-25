@@ -2,7 +2,6 @@ package com.markskroba.devconnectorspringboot.posts;
 
 import com.markskroba.devconnectorspringboot.posts.dto.CreatePostDto;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/posts")
@@ -39,7 +37,7 @@ public class PostController {
     public ResponseEntity<ResponseMessage> deleteOneById(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(postService.deleteOneById(id));
     }
-//
+
     @PutMapping("/like/{id}")
     public ResponseEntity<Post> likePost(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(postService.likePost(id));
