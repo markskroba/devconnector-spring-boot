@@ -4,7 +4,6 @@ import com.markskroba.devconnectorspringboot.auth.jwt.JwtAuthService;
 import com.markskroba.devconnectorspringboot.posts.ResponseMessage;
 import com.markskroba.devconnectorspringboot.profiles.dto.CreateProfileDto;
 import com.markskroba.devconnectorspringboot.users.User;
-import io.jsonwebtoken.lang.Maps;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -49,7 +48,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .build();
 
         Profile p = Profile.builder()
-                .user(id)
+                .user(new ObjectId(id))
                 .company(dto.getCompany())
                 .website(dto.getWebsite())
                 .location(dto.getLocation())
@@ -74,8 +73,10 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ResponseMessage deleteUserProfile(String userId) {
-        Profile p = this.getUserProfile(userId);
+    public ResponseMessage deleteUserProfile() {
+        User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
+        String id = user.get_id();
+        Profile p = this.getUserProfile(id);
         profileRepository.delete(p);
         return new ResponseMessage("User removed");
     }

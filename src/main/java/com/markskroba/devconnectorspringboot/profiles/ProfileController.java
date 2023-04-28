@@ -36,8 +36,8 @@ public class ProfileController {
        return ResponseEntity.ok().body(profileService.getUserProfile(userId));
     }
 
-    @DeleteMapping("/user/{userId}")
-    public ResponseEntity<ResponseMessage> deleteUserProfile(@PathVariable("userId") String userId) {
-        return ResponseEntity.ok().body(profileService.deleteUserProfile(userId));
+    @DeleteMapping("/")
+    public ResponseEntity<ResponseMessage> deleteUserProfile() {
+        return ResponseEntity.ok().body(profileService.deleteUserProfile());
     }
 }

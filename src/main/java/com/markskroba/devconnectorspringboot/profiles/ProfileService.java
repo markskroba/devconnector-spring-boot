@@ -14,5 +14,5 @@ public interface ProfileService {
 
     Profile getUserProfile(String userId);
 
-    ResponseMessage deleteUserProfile(String userId);
+    ResponseMessage deleteUserProfile();
 }
