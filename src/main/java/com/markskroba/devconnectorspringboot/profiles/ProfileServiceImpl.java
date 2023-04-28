@@ -1,6 +1,7 @@
 package com.markskroba.devconnectorspringboot.profiles;
 
 import com.markskroba.devconnectorspringboot.auth.jwt.JwtAuthService;
+import com.markskroba.devconnectorspringboot.posts.ResponseMessage;
 import com.markskroba.devconnectorspringboot.profiles.dto.CreateProfileDto;
 import com.markskroba.devconnectorspringboot.users.User;
 import io.jsonwebtoken.lang.Maps;
@@ -24,10 +25,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Profile getMyProfile() {
         User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
-        ObjectId id = new ObjectId(user.get_id());
-        Profile p = mongoOperations.findOne(Query.query(Criteria.where("user").is(id)), Profile.class);
-        if (p == null) throw new NoSuchElementException("No profile for this user");
-        return p;
+        String id = user.get_id();
+        return this.getUserProfile(id);
     }
 
     @Override
@@ -64,5 +63,20 @@ public class ProfileServiceImpl implements ProfileService {
 
         profileRepository.save(p);
         return p;
+    }
+
+    @Override
+    public Profile getUserProfile(String userId) {
+        ObjectId id = new ObjectId(userId);
+        Profile p = mongoOperations.findOne(Query.query(Criteria.where("user").is(id)), Profile.class);
+        if (p == null) throw new NoSuchElementException("No profile for this user");
+        return p;
+    }
+
+    @Override
+    public ResponseMessage deleteUserProfile(String userId) {
+        Profile p = this.getUserProfile(userId);
+        profileRepository.delete(p);
+        return new ResponseMessage("User removed");
     }
 }

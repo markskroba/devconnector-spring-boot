@@ -1,6 +1,7 @@
 package com.markskroba.devconnectorspringboot.profiles;
 
 import com.markskroba.devconnectorspringboot.auth.jwt.JwtAuthService;
+import com.markskroba.devconnectorspringboot.posts.ResponseMessage;
 import com.markskroba.devconnectorspringboot.profiles.dto.CreateProfileDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -28,5 +29,15 @@ public class ProfileController {
     @PostMapping("/")
     public ResponseEntity<Profile> createProfile(@RequestBody CreateProfileDto dto) {
         return ResponseEntity.ok().body(profileService.createProfile(dto));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Profile> getUserProfile(@PathVariable("userId") String userId) {
+       return ResponseEntity.ok().body(profileService.getUserProfile(userId));
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<ResponseMessage> deleteUserProfile(@PathVariable("userId") String userId) {
+        return ResponseEntity.ok().body(profileService.deleteUserProfile(userId));
     }
 }
