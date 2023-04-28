@@ -80,4 +80,76 @@ public class ProfileServiceImpl implements ProfileService {
         profileRepository.delete(p);
         return new ResponseMessage("User removed");
     }
+
+    @Override
+    public Profile addEducation(EducationData dto) {
+       Profile p = this.getMyProfile();
+       var education = p.getEducation();
+       if (education == null) education = new ArrayList<>();
+       EducationData newEducation = EducationData.builder()
+               ._id(new ObjectId())
+               .school(dto.getSchool())
+               .degree(dto.getDegree())
+               .fieldofstudy(dto.getFieldofstudy())
+               .from(dto.getFrom())
+               .from(dto.getFrom())
+               .current(dto.getCurrent())
+               .description(dto.getDescription())
+               .build();
+       education.add(newEducation);
+       p.setEducation(education);
+       profileRepository.save(p);
+       return p;
+    }
+
+    @Override
+    public Profile addExperience(ExperienceData dto) {
+        Profile p = this.getMyProfile();
+        var experience = p.getExperience();
+        if (experience == null) experience = new ArrayList<>();
+        ExperienceData newExperience = ExperienceData.builder()
+                ._id(new ObjectId())
+                .title(dto.getTitle())
+                .company(dto.getCompany())
+                .location(dto.getLocation())
+                .from(dto.getFrom())
+                .to(dto.getTo())
+                .current(dto.getCurrent())
+                .description(dto.getDescription())
+                .build();
+        experience.add(newExperience);
+        p.setExperience(experience);
+        profileRepository.save(p);
+        return p;
+    }
+
+    @Override
+    public Profile deleteEducation(String id) {
+        Profile p = this.getMyProfile();
+        var education = p.getEducation();
+        EducationData e = education
+                .stream()
+                .filter(i -> new ObjectId(id).equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two educations with the same ID found");})
+                .orElseThrow(() -> new NoSuchElementException("No education with this ID found"));
+
+        education.remove(e);
+        p.setEducation(education);
+        profileRepository.save(p);
+        return p;
+    }
+
+    @Override
+    public Profile deleteExperience(String id) {
+        Profile p = this.getMyProfile();
+        var experience = p.getExperience();
+        ExperienceData e = experience
+                .stream()
+                .filter(i -> new ObjectId(id).equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two experiences with the same ID found");})
+                .orElseThrow(() -> new NoSuchElementException("No education with this ID found"));
+
+        experience.remove(e);
+        p.setExperience(experience);
+        profileRepository.save(p);
+        return p;
+    }
 }

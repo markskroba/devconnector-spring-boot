@@ -15,4 +15,12 @@ public interface ProfileService {
     Profile getUserProfile(String userId);
 
     ResponseMessage deleteUserProfile();
+
+    Profile addEducation(EducationData dto);
+
+    Profile addExperience(ExperienceData dto);
+
+    Profile deleteEducation(String id);
+
+    Profile deleteExperience(String id);
 }

@@ -2,12 +2,16 @@ package com.markskroba.devconnectorspringboot.profiles;
 
 import lombok.Builder;
 import lombok.Data;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 
 import java.util.Date;
 
 @Data
 @Builder
 public class EducationData {
+    @Id
+    private ObjectId _id;
     private String school;
     private String degree;
     private String fieldofstudy;

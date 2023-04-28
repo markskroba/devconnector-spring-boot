@@ -40,4 +40,24 @@ public class ProfileController {
     public ResponseEntity<ResponseMessage> deleteUserProfile() {
         return ResponseEntity.ok().body(profileService.deleteUserProfile());
     }
+
+    @PutMapping("/education")
+    public ResponseEntity<Profile> addEducation(@RequestBody EducationData dto) {
+        return ResponseEntity.ok().body(profileService.addEducation(dto));
+    }
+
+    @PutMapping("/experience")
+    public ResponseEntity<Profile> addExperience(@RequestBody ExperienceData dto) {
+        return ResponseEntity.ok().body(profileService.addExperience(dto));
+    }
+
+    @DeleteMapping("/education/{education_id}")
+    public ResponseEntity<Profile> deleteEducation(@PathVariable("education_id") String id) {
+        return ResponseEntity.ok().body(profileService.deleteEducation(id));
+    }
+
+    @DeleteMapping("/experience/{experience_id}")
+    public ResponseEntity<Profile> deleteExperience(@PathVariable("experience_id") String id) {
+        return ResponseEntity.ok().body(profileService.deleteExperience(id));
+    }
 }
