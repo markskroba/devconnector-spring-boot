@@ -1,7 +1,9 @@
 package com.markskroba.devconnectorspringboot.profiles;
 
 import com.markskroba.devconnectorspringboot.auth.jwt.JwtAuthService;
+import com.markskroba.devconnectorspringboot.profiles.dto.CreateProfileDto;
 import com.markskroba.devconnectorspringboot.users.User;
+import io.jsonwebtoken.lang.Maps;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -9,8 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,5 +35,34 @@ public class ProfileServiceImpl implements ProfileService {
         return profileRepository.findAll();
     }
 
+    @Override
+    public Profile createProfile(CreateProfileDto dto) {
+        User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
+        String id = user.get_id();
 
+        List<String> skills = Arrays.stream(dto.getSkills().split(", ")).toList();
+        SocialsData socials = SocialsData.builder()
+                .youtube(dto.getYoutube())
+                .twitter(dto.getTwitter())
+                .facebook(dto.getFacebook())
+                .linkedin(dto.getLinkedin())
+                .instagram(dto.getInstagram())
+                .build();
+
+        Profile p = Profile.builder()
+                .user(id)
+                .company(dto.getCompany())
+                .website(dto.getWebsite())
+                .location(dto.getLocation())
+                .bio(dto.getBio())
+                .status(dto.getStatus())
+                .githubuser(dto.getGithubusername())
+                .skills(skills)
+                .socials(socials)
+                .build()
+                ;
+
+        profileRepository.save(p);
+        return p;
+    }
 }

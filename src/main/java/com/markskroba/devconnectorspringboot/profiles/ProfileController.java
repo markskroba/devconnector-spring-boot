@@ -1,11 +1,11 @@
 package com.markskroba.devconnectorspringboot.profiles;
 
 import com.markskroba.devconnectorspringboot.auth.jwt.JwtAuthService;
+import com.markskroba.devconnectorspringboot.profiles.dto.CreateProfileDto;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,4 +25,8 @@ public class ProfileController {
         return ResponseEntity.ok().body(profileService.getMyProfile());
     }
 
+    @PostMapping("/")
+    public ResponseEntity<Profile> createProfile(@RequestBody CreateProfileDto dto) {
+        return ResponseEntity.ok().body(profileService.createProfile(dto));
+    }
 }
