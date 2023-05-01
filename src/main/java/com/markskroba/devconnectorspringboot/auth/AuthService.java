@@ -3,6 +3,9 @@ package com.markskroba.devconnectorspringboot.auth;
 import com.markskroba.devconnectorspringboot.auth.jwt.JwtAuthService;
 import com.markskroba.devconnectorspringboot.users.User;
 import com.markskroba.devconnectorspringboot.users.UserRepository;
+import de.bripkens.gravatar.DefaultImage;
+import de.bripkens.gravatar.Gravatar;
+import de.bripkens.gravatar.Rating;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,10 +28,17 @@ public class AuthService {
         if (request.getEmail() == null) throw new IllegalArgumentException("Please include valid email");
         if (request.getPassword() == null) throw new IllegalArgumentException("Password is required");
 
+        var avatar = new Gravatar()
+                .setSize(200)
+                .setRating(Rating.PARENTAL_GUIDANCE_SUGGESTED)
+                .setStandardDefaultImage(DefaultImage.MONSTER)
+                .getUrl(request.getEmail());
+
         var user = User
                 .builder()
                 .name(request.getName())
                 .email(request.getEmail())
+                .avatar(avatar)
                 .password(encoder.encode(request.getPassword()))
                 .date(new Date())
                 .build();
