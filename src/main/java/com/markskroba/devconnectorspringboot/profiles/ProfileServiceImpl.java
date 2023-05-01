@@ -47,6 +47,9 @@ public class ProfileServiceImpl implements ProfileService {
                 .instagram(dto.getInstagram())
                 .build();
 
+        if (dto.getStatus() == null) throw new IllegalArgumentException("Status is required");
+        if (dto.getSkills() == null) throw new IllegalArgumentException("Status is required");
+
         Profile p = Profile.builder()
                 .user(new ObjectId(id))
                 .company(dto.getCompany())
@@ -83,7 +86,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile addEducation(EducationData dto) {
-       Profile p = this.getMyProfile();
+        if (dto.getSchool() == null) throw new IllegalArgumentException("School is required");
+        if (dto.getDegree() == null) throw new IllegalArgumentException("Degree is required");
+        if (dto.getFieldofstudy() == null) throw new IllegalArgumentException("Field of Study is required");
+        if (dto.getFrom() == null) throw new IllegalArgumentException("From date is required");
+
+        Profile p = this.getMyProfile();
        var education = p.getEducation();
        if (education == null) education = new ArrayList<>();
        EducationData newEducation = EducationData.builder()
@@ -104,6 +112,10 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile addExperience(ExperienceData dto) {
+        if (dto.getTitle() == null) throw new IllegalArgumentException("Title is required");
+        if (dto.getCompany() == null) throw new IllegalArgumentException("Company is required");
+        if (dto.getFrom() == null) throw new IllegalArgumentException("From date is required");
+
         Profile p = this.getMyProfile();
         var experience = p.getExperience();
         if (experience == null) experience = new ArrayList<>();
