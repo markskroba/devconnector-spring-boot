@@ -36,6 +36,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post createPost(CreatePostDto dto) {
+        if (dto.getText() == null) throw new IllegalArgumentException("Text is required");
         User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
         Post post = Post
                 .builder()
@@ -78,6 +79,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post commentOnPost(String id, CreatePostDto dto) {
+        if (dto.getText() == null) throw new IllegalArgumentException("Text is required");
+
         String text = dto.getText();
         User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
         String userId = user.get_id();

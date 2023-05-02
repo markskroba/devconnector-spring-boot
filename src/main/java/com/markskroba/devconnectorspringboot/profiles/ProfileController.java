@@ -5,10 +5,12 @@ import com.markskroba.devconnectorspringboot.posts.ResponseMessage;
 import com.markskroba.devconnectorspringboot.profiles.dto.CreateProfileDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -59,5 +61,14 @@ public class ProfileController {
     @DeleteMapping("/experience/{experience_id}")
     public ResponseEntity<Profile> deleteExperience(@PathVariable("experience_id") String id) {
         return ResponseEntity.ok().body(profileService.deleteExperience(id));
+    }
+
+
+    @ExceptionHandler({NoSuchElementException.class, IllegalArgumentException.class})
+    public ResponseEntity<ResponseMessage> handleNotFound(Exception e) {
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        if (e.getClass() == IllegalArgumentException.class) httpStatus = HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<>(new ResponseMessage(e.getMessage()), httpStatus);
     }
 }
