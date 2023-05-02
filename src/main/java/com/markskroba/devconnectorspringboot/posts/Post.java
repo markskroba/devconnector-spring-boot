@@ -28,15 +28,4 @@ public class Post {
     private List<LikeData> likes;
     private List<CommentData> comments;
     private Date date;
-
-    public Post(String text, String user) {
-       this.text = text;
-       // todo: once token is stored in headers, dto should get it and use for name/avatar here
-       this.name = "Mark Skroba";
-       this.avatar = "//www.gravatar.com/avatar/5a156282f2f4fe6318bdaef95f1f2d4f?s=200&r=pg&d=mm";
-       this.user = "6056d8958ba84fc81f46cfe7";
-       this.likes = new ArrayList<>();
-       this.comments = new ArrayList<>();
-       this.date = new Date();
-    }
 }

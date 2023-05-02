@@ -28,9 +28,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseMessage deleteOneById(String id) {
-        if (!postRepository.existsById(id)) throw new NoSuchElementException("Post not found");
+        Post p = postRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Post not found"));
+        User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
+        if (Objects.equals(user.get_id(), p.getUser())) throw new NoSuchElementException("No post from this user with this ID exist");
         postRepository.deleteById(id);
-        // todo: user not authorized when deleting posts of other users
         return new ResponseMessage("Post deleted");
     }
 
