@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/api/profile")
 @RequiredArgsConstructor
 public class ProfileController {
 
@@ -28,7 +28,7 @@ public class ProfileController {
         return ResponseEntity.ok().body(profileService.getMyProfile());
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<Profile> createProfile(@RequestBody CreateProfileDto dto) {
         return ResponseEntity.ok().body(profileService.createProfile(dto));
     }
@@ -38,7 +38,7 @@ public class ProfileController {
        return ResponseEntity.ok().body(profileService.getUserProfile(userId));
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping()
     public ResponseEntity<ResponseMessage> deleteUserProfile() {
         return ResponseEntity.ok().body(profileService.deleteUserProfile());
     }
