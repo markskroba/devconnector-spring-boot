@@ -1,7 +1,11 @@
 spring:
   data:
+#    mongodb:
+#      uri: mongodb+srv://mark:mark@cluster0.vm0isho.mongodb.net/?retryWrites=true&w=majority
+#      database: myFirstDatabase
     mongodb:
-      uri: mongodb+srv://mark:mark@cluster0.vm0isho.mongodb.net/?retryWrites=true&w=majority
+      host: mongo
+      port: 27017
       database: myFirstDatabase
 
 server:
