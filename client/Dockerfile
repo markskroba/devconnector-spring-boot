@@ -11,6 +11,6 @@ FROM dev as build
 RUN ["npm", "run", "build"]
 
 FROM nginx:alpine
-COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
+#COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --from=build /client/build /usr/share/nginx/html
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
