@@ -8,6 +8,7 @@ services:
       - 5000:5000
     depends_on:
       - mongo
+
   mongo:
     image: "mongo"
     restart: always
@@ -20,3 +21,12 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - mongo
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - api
