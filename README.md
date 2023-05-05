@@ -10,9 +10,18 @@ and front-end written in React.
 
 ## Run
 
+### Local
 It uses Maven as its build tool, so `mvn spring-boot:run` will run in exploded 
 mode on post 5000 (specified in `application.yml`), although throughout its development 
 it was mostly run through the IDE.
+
+### Docker
+```
+# Build
+mvn clean package spring-boot:repackage
+# Run
+docker-compose up --build
+```
 
 ## Other links
 
