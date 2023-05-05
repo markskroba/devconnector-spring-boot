@@ -1,0 +1,53 @@
+[
+  {
+    "_id": {
+      "$oid": "6056d8958ba84fc81f46cfe7"
+    },
+    "name": "Mark Skroba",
+    "email": "markskroba@gmail.com",
+    "avatar": "//www.gravatar.com/avatar/5a156282f2f4fe6318bdaef95f1f2d4f?s=200&r=pg&d=mm",
+    "password": "$2a$10$q/MjShCUFPwC4kwt9.yd8uBdA19oXQXAP2.8EaEBQR6H58zt1otSu",
+    "date": {
+      "$date": {
+        "$numberLong": "1616304277551"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60b445a01dddf20a0a037a59"
+    },
+    "name": "Steve Smith",
+    "email": "test@gmail.com",
+    "avatar": "//www.gravatar.com/avatar/1aedb8d9dc4751e229a335e371db8058?s=200&r=pg&d=mm",
+    "password": "$2a$10$IWW/LN74v/E6yFCXNVnl4uFJS.Am3qmRJOxO32N7erPyR6l2EhD.G",
+    "date": {
+      "$date": {
+        "$numberLong": "1622427040818"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6431c8caa98e30604c1adfe1"
+    },
+    "name": "Test",
+    "email": "testtest@gmail.com",
+    "avatar": "//www.gravatar.com/avatar/f7c504b5c111d18ea57b2b73b01e17c5?s=200&r=pg&d=mm",
+    "password": "$2a$10$q/MjShCUFPwC4kwt9.yd8uBdA19oXQXAP2.8EaEBQR6H58zt1otSu",
+    "date": {
+      "$date": {
+        "$numberLong": "1680984266796"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  }
+]

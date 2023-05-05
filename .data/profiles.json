@@ -1,0 +1,82 @@
+[
+  {
+    "_id": {
+      "$oid": "6068d68da4a2750c28bc5d34"
+    },
+    "skills": [
+      "HTML",
+      "CSS",
+      "React"
+    ],
+    "user": {
+      "$oid": "6056d8958ba84fc81f46cfe7"
+    },
+    "company": "Mark Skroba Inc.",
+    "website": "https://markskroba.com",
+    "location": "Saint Louis, MO",
+    "bio": "I am a developer at Mark Skroba Inc.",
+    "status": "Developer",
+    "experience": [
+      {
+        "current": true,
+        "_id": {
+          "$oid": "60b48d0ba4bfe050c3bbfebb"
+        },
+        "title": "Intern",
+        "company": "Google",
+        "location": "Saint Louis, MO",
+        "from": {
+          "$date": {
+            "$numberLong": "1597035600000"
+          }
+        },
+        "description": "First internship"
+      },
+      {
+        "current": true,
+        "_id": {
+          "$oid": "60b4488449cade20afb1add3"
+        },
+        "title": "Intern",
+        "company": "Paypal",
+        "location": "Saint Louis, MO",
+        "from": {
+          "$date": {
+            "$numberLong": "1597035600000"
+          }
+        },
+        "description": "First internship"
+      }
+    ],
+    "education": [
+      {
+        "_id": {
+          "$oid": "60b853155b7f36f1b8f45485"
+        },
+        "school": "Saint Louis University",
+        "degree": "Bachelor of Arts",
+        "fieldofstudy": "Computer Science",
+        "from": {
+          "$date": {
+            "$numberLong": "1597035600000"
+          }
+        },
+        "to": {
+          "$date": {
+            "$numberLong": "1597122000000"
+          }
+        },
+        "current": false,
+        "description": "University"
+      }
+    ],
+    "date": {
+      "$date": {
+        "$numberLong": "1617483405707"
+      }
+    },
+    "__v": {
+      "$numberInt": "5"
+    }
+  }
+]

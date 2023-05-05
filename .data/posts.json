@@ -1,0 +1,49 @@
+[
+  {
+    "_id": {
+      "$oid": "60b85bfa40ccff23ac0a43a7"
+    },
+    "text": "My first post",
+    "name": "Mark Skroba",
+    "avatar": "//www.gravatar.com/avatar/5a156282f2f4fe6318bdaef95f1f2d4f?s=200&r=pg&d=mm",
+    "user": {
+      "$oid": "6056d8958ba84fc81f46cfe7"
+    },
+    "likes": [
+      {
+        "_id": {
+          "$oid": "60b862c9d3e2cf5087b3dea5"
+        },
+        "user": {
+          "$oid": "6056d8958ba84fc81f46cfe7"
+        }
+      }
+    ],
+    "comments": [
+      {
+        "_id": {
+          "$oid": "60b86410945c405b2d36fdf9"
+        },
+        "text": "My first comment",
+        "name": "Mark Skroba",
+        "avatar": "//www.gravatar.com/avatar/5a156282f2f4fe6318bdaef95f1f2d4f?s=200&r=pg&d=mm",
+        "user": {
+          "$oid": "6056d8958ba84fc81f46cfe7"
+        },
+        "date": {
+          "$date": {
+            "$numberLong": "1622696976789"
+          }
+        }
+      }
+    ],
+    "date": {
+      "$date": {
+        "$numberLong": "1622694906319"
+      }
+    },
+    "__v": {
+      "$numberInt": "6"
+    }
+  }
+]

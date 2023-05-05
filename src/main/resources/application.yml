@@ -6,7 +6,7 @@ spring:
     mongodb:
       host: mongo
       port: 27017
-      database: myFirstDatabase
+      database: devconnector
 
 server:
   port: 5000
