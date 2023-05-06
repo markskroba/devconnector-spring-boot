@@ -1,12 +1,11 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   data:
-#    mongodb:
-#      uri: mongodb+srv://mark:mark@cluster0.vm0isho.mongodb.net/?retryWrites=true&w=majority
-#      database: myFirstDatabase
     mongodb:
-      host: mongo
-      port: 27017
-      database: devconnector
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      database: ${MONGO_DB}
 
 server:
   port: 5000
