@@ -48,10 +48,10 @@ public class ProfileServiceImpl implements ProfileService {
                 .build();
 
         if (dto.getStatus() == null) throw new IllegalArgumentException("Status is required");
-        if (dto.getSkills() == null) throw new IllegalArgumentException("Status is required");
+        if (dto.getSkills() == null) throw new IllegalArgumentException("Skills are required");
 
         Profile p = Profile.builder()
-                .user(new ObjectId(id))
+                .user(id)
                 .company(dto.getCompany())
                 .website(dto.getWebsite())
                 .location(dto.getLocation())
