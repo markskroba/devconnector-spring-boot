@@ -18,12 +18,12 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping
-    public ResponseEntity<List<Profile>> getAllProfiles() {
+    public ResponseEntity<List<ProfileWithUserData>> getAllProfiles() {
         return ResponseEntity.ok().body(profileService.getAllProfiles());
     }
     @GetMapping("/me")
-    public ResponseEntity<Profile> getMyProfile() {
-        return ResponseEntity.ok().body(profileService.getMyProfile());
+    public ResponseEntity<ProfileWithUserData> getMyProfile() {
+        return ResponseEntity.ok().body(profileService.getMyProfileWithUserData());
     }
 
     @PostMapping
@@ -32,7 +32,7 @@ public class ProfileController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Profile> getUserProfile(@PathVariable("userId") String userId) {
+    public ResponseEntity<ProfileWithUserData> getUserProfile(@PathVariable("userId") String userId) {
        return ResponseEntity.ok().body(profileService.getUserProfile(userId));
     }
 
