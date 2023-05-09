@@ -95,7 +95,7 @@ public class ProfileServiceImpl implements ProfileService {
        var education = p.getEducation();
        if (education == null) education = new ArrayList<>();
        EducationData newEducation = EducationData.builder()
-               ._id(new ObjectId())
+               ._id(new ObjectId().toString())
                .school(dto.getSchool())
                .degree(dto.getDegree())
                .fieldofstudy(dto.getFieldofstudy())
@@ -120,7 +120,7 @@ public class ProfileServiceImpl implements ProfileService {
         var experience = p.getExperience();
         if (experience == null) experience = new ArrayList<>();
         ExperienceData newExperience = ExperienceData.builder()
-                ._id(new ObjectId())
+                ._id(new ObjectId().toString())
                 .title(dto.getTitle())
                 .company(dto.getCompany())
                 .location(dto.getLocation())
@@ -141,7 +141,7 @@ public class ProfileServiceImpl implements ProfileService {
         var education = p.getEducation();
         EducationData e = education
                 .stream()
-                .filter(i -> new ObjectId(id).equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two educations with the same ID found");})
+                .filter(i -> id.equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two educations with the same ID found");})
                 .orElseThrow(() -> new NoSuchElementException("No education with this ID found"));
 
         education.remove(e);
@@ -156,7 +156,7 @@ public class ProfileServiceImpl implements ProfileService {
         var experience = p.getExperience();
         ExperienceData e = experience
                 .stream()
-                .filter(i -> new ObjectId(id).equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two experiences with the same ID found");})
+                .filter(i -> id.equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two experiences with the same ID found");})
                 .orElseThrow(() -> new NoSuchElementException("No education with this ID found"));
 
         experience.remove(e);

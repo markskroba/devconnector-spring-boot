@@ -11,7 +11,7 @@ import java.util.Date;
 @Builder
 public class EducationData {
     @Id
-    private ObjectId _id;
+    private String _id;
     private String school;
     private String degree;
     private String fieldofstudy;
