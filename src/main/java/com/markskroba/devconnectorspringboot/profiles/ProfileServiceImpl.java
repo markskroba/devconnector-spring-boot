@@ -6,7 +6,12 @@ import com.markskroba.devconnectorspringboot.profiles.dto.CreateProfileDto;
 import com.markskroba.devconnectorspringboot.users.User;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.MongoExpression;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.AddFieldsOperation;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.LookupOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -20,17 +25,31 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
     private final JwtAuthService authService;
     private final MongoOperations mongoOperations;
+    private final MongoTemplate mongoTemplate;
 
     @Override
-    public Profile getMyProfile() {
+    public ProfileWithUserData getMyProfileWithUserData() {
         User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
         String id = user.get_id();
         return this.getUserProfile(id);
     }
 
+    public Profile getMyProfile() {
+        User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
+        String id = user.get_id();
+        return this.getUsersProfile(id);
+    }
+
     @Override
-    public List<Profile> getAllProfiles() {
-        return profileRepository.findAll();
+    public List<ProfileWithUserData> getAllProfiles() {
+        LookupOperation lookup = LookupOperation.newLookup()
+                .from("users")
+                .localField("user")
+                .foreignField("_id")
+                .as("user");
+        Aggregation aggregation = Aggregation.newAggregation(lookup, Aggregation.unwind("$user"));
+        List<ProfileWithUserData> result = mongoTemplate.aggregate(aggregation, "profiles", ProfileWithUserData.class).getMappedResults();
+        return result;
     }
 
     @Override
@@ -48,10 +67,10 @@ public class ProfileServiceImpl implements ProfileService {
                 .build();
 
         if (dto.getStatus() == null) throw new IllegalArgumentException("Status is required");
-        if (dto.getSkills() == null) throw new IllegalArgumentException("Status is required");
+        if (dto.getSkills() == null) throw new IllegalArgumentException("Skills are required");
 
         Profile p = Profile.builder()
-                .user(new ObjectId(id))
+                .user(id)
                 .company(dto.getCompany())
                 .website(dto.getWebsite())
                 .location(dto.getLocation())
@@ -68,18 +87,17 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile getUserProfile(String userId) {
-        ObjectId id = new ObjectId(userId);
-        Profile p = mongoOperations.findOne(Query.query(Criteria.where("user").is(id)), Profile.class);
-        if (p == null) throw new NoSuchElementException("No profile for this user");
-        return p;
+    public ProfileWithUserData getUserProfile(String userId) {
+        var allProfiles = this.getAllProfiles().stream().filter(p -> userId.equals(p.getUser().get_id())).toList();
+        if (allProfiles.size() == 0) throw new NoSuchElementException("No profile for this user");
+        return allProfiles.get(0);
     }
 
     @Override
     public ResponseMessage deleteUserProfile() {
         User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
         String id = user.get_id();
-        Profile p = this.getUserProfile(id);
+        Profile p = this.getUsersProfile(id);
         profileRepository.delete(p);
         return new ResponseMessage("User removed");
     }
@@ -95,7 +113,7 @@ public class ProfileServiceImpl implements ProfileService {
        var education = p.getEducation();
        if (education == null) education = new ArrayList<>();
        EducationData newEducation = EducationData.builder()
-               ._id(new ObjectId())
+               ._id(new ObjectId().toString())
                .school(dto.getSchool())
                .degree(dto.getDegree())
                .fieldofstudy(dto.getFieldofstudy())
@@ -120,7 +138,7 @@ public class ProfileServiceImpl implements ProfileService {
         var experience = p.getExperience();
         if (experience == null) experience = new ArrayList<>();
         ExperienceData newExperience = ExperienceData.builder()
-                ._id(new ObjectId())
+                ._id(new ObjectId().toString())
                 .title(dto.getTitle())
                 .company(dto.getCompany())
                 .location(dto.getLocation())
@@ -141,7 +159,7 @@ public class ProfileServiceImpl implements ProfileService {
         var education = p.getEducation();
         EducationData e = education
                 .stream()
-                .filter(i -> new ObjectId(id).equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two educations with the same ID found");})
+                .filter(i -> id.equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two educations with the same ID found");})
                 .orElseThrow(() -> new NoSuchElementException("No education with this ID found"));
 
         education.remove(e);
@@ -156,12 +174,20 @@ public class ProfileServiceImpl implements ProfileService {
         var experience = p.getExperience();
         ExperienceData e = experience
                 .stream()
-                .filter(i -> new ObjectId(id).equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two experiences with the same ID found");})
+                .filter(i -> id.equals(i.get_id())).reduce((a,b) -> {throw new IllegalStateException("At least two experiences with the same ID found");})
                 .orElseThrow(() -> new NoSuchElementException("No education with this ID found"));
 
         experience.remove(e);
         p.setExperience(experience);
         profileRepository.save(p);
         return p;
+    }
+
+    public Profile getUsersProfile(String id) {
+        return mongoOperations.findOne(
+                Query.query(Criteria.where("_id").is(id)),
+                Profile.class,
+                "profiles"
+        );
     }
 }

@@ -5,25 +5,20 @@ import com.markskroba.devconnectorspringboot.users.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Reference;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.util.Date;
 import java.util.List;
 
-@Document("profiles")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @Builder
 @AllArgsConstructor
-public class Profile {
-    @Id
+public class ProfileWithUserData {
     private String _id;
     @Field(targetType = FieldType.OBJECT_ID)
-    private String user;
+    private User user;
     private String company;
     private String website;
     private String location;

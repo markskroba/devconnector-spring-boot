@@ -6,13 +6,14 @@ import com.markskroba.devconnectorspringboot.profiles.dto.CreateProfileDto;
 import java.util.List;
 
 public interface ProfileService {
-    Profile getMyProfile();
+    ProfileWithUserData getMyProfileWithUserData();
 
-    List<Profile> getAllProfiles();
+    List<ProfileWithUserData> getAllProfiles();
+
+    ProfileWithUserData getUserProfile(String userId);
 
     Profile createProfile(CreateProfileDto dto);
 
-    Profile getUserProfile(String userId);
 
     ResponseMessage deleteUserProfile();
 
