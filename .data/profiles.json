@@ -23,7 +23,7 @@
           "$oid": "60b48d0ba4bfe050c3bbfebb"
         },
         "title": "Intern",
-        "company": "Google",
+        "company": "Mark Skroba Inc.",
         "location": "Saint Louis, MO",
         "from": {
           "$date": {
@@ -38,7 +38,7 @@
           "$oid": "60b4488449cade20afb1add3"
         },
         "title": "Intern",
-        "company": "Paypal",
+        "company": "Mark Skroba Inc.",
         "location": "Saint Louis, MO",
         "from": {
           "$date": {
