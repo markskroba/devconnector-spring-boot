@@ -27,7 +27,6 @@ public class ProfileServiceImpl implements ProfileService {
     private final MongoOperations mongoOperations;
     private final MongoTemplate mongoTemplate;
 
-    @Override
     public ProfileWithUserData getMyProfileWithUserData() {
         User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
         String id = user.get_id();
@@ -36,8 +35,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     public Profile getMyProfile() {
         User user = authService.getUserFromSecurityContext().orElseThrow(() -> new NoSuchElementException("User not found"));
+        System.out.println("User: " + user.toString());
         String id = user.get_id();
-        return this.getUsersProfile(id);
+        System.out.println("ID: " + id);
+        // temporary fix
+        String profileID = this.getMyProfileWithUserData().get_id();
+        return profileRepository.findById(profileID).orElseThrow(() -> new NoSuchElementException("No profile for this user"));
     }
 
     @Override

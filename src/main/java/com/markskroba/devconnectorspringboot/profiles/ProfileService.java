@@ -6,7 +6,7 @@ import com.markskroba.devconnectorspringboot.profiles.dto.CreateProfileDto;
 import java.util.List;
 
 public interface ProfileService {
-    ProfileWithUserData getMyProfileWithUserData();
+    Profile getMyProfile();
 
     List<ProfileWithUserData> getAllProfiles();
 

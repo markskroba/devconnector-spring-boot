@@ -22,8 +22,8 @@ public class ProfileController {
         return ResponseEntity.ok().body(profileService.getAllProfiles());
     }
     @GetMapping("/me")
-    public ResponseEntity<ProfileWithUserData> getMyProfile() {
-        return ResponseEntity.ok().body(profileService.getMyProfileWithUserData());
+    public ResponseEntity<Profile> getMyProfile() {
+        return ResponseEntity.ok().body(profileService.getMyProfile());
     }
 
     @PostMapping
